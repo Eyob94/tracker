@@ -7,7 +7,9 @@ import { IconContext } from "react-icons";
 import { IoIosEye } from "react-icons/io";
 import Spinner from "../Spinner/Spinner";
 import Tick from "../Spinner/Tick";
-import Registration from "./Functions/Register";
+import Registration, { error, registerTypes } from "./Functions/Register";
+import { signIn } from "next-auth/react";
+import { NextRouter, useRouter } from "next/router";
 
 type formData = {
 	email: string;
@@ -57,14 +59,20 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 	const [showPassword, setShowPassword] = useState<Boolean>(false);
 	const [loading, setLoading] = useState<Boolean>(false);
 	const [tick, setTick] = useState<Boolean>(false);
+	const router = useRouter();
 
 	return (
 		<form
+			data-testid="authForm"
 			onSubmit={handleSubmit(async (data) => {
-				setLoading(true);
+				/* setLoading(true); */
+
 				if (method === "Register") {
-					console.log("fds");
 					const res = await Registration(data)
+						.then(() => {
+							setLoading(false);
+							setTick(true);
+						})
 						.catch((err) => {
 							if (err === "P2002") {
 								setError(
@@ -73,15 +81,32 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 									{ shouldFocus: true }
 								);
 							}
-
-							setLoading(false);
 						})
 						.finally(() => {
 							setLoading(false);
-							setTick(true);
 						});
-
-					console.log(res);
+				} else {
+					const res = await signIn("credentials", {
+						...data,
+						redirect: false,
+					})
+						.then(async ({ ok, error }) => {
+							if (ok) {
+								await setLoading(false);
+								await setTick(true);
+								setTimeout(() => {
+									router.push("/");
+								}, 500);
+							} else {
+								setError("email", { message: "Please check your credentials" });
+								setError("password", {
+									message: "Please check your credentials",
+								});
+								console.log(error);
+								setLoading(false);
+							}
+						})
+						.catch((err: any) => {});
 				}
 			})}
 		>
@@ -125,8 +150,10 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 											}
 										},
 									})}
+									id={field.name}
+									placeholder={field.name}
 									autoComplete="new-password"
-									className="w-full bg-transparent outline-none focus:border-primary text-violet-800 peer placeholder:text-primary/30"
+									className="w-full bg-transparent outline-none placeholder:opacity-0 focus:border-primary text-violet-800 peer placeholder:text-primary/30"
 									type={showPassword ? "text" : field.type}
 								/>
 								<hr
@@ -137,7 +164,8 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 									} peer-focus:w-full`}
 								/>
 
-								<span
+								<label
+									htmlFor={field.name}
 									className={`absolute transition-all duration-300 text-light peer-focus:text-xs peer-focus:-top-2/3 -z-10 peer-focus:text-violet-500 ${
 										watch(field.name as "email" | "password" | "confirm")
 											? "-top-2/3 text-xs text-violet-500"
@@ -145,7 +173,7 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 									}`}
 								>
 									{field.label}
-								</span>
+								</label>
 								{field.type === "password" && (
 									<span
 										className="relative z-10 ml-4 cursor-pointer"
@@ -170,12 +198,12 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 							</span>
 							<div className="h-1 text-xs text-red-500">
 								{errors[field.name as "email" | "password" | "confirm"] && (
-									<>
+									<span title="error">
 										{
 											errors[field.name as "email" | "password" | "confirm"]
 												?.message
 										}
-									</>
+									</span>
 								)}
 							</div>
 						</span>

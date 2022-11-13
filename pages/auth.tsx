@@ -3,18 +3,21 @@ import Animation from "../components/Auth/utils/Animation";
 import LoginForm from "../components/Auth/Login/LoginForm";
 import Image from "next/image";
 import RegisterForm from "../components/Auth/Register/RegisterForm";
+import useMethodChange from "../components/Auth/utils/Hooks/useMethodChange";
+import { getSession, useSession } from "next-auth/react";
 
-const pages = () => {
-	const [method, setMethod] = useState<string>("Login");
+export const getServerSideProps = async ({ req, res, query }) => {
+	const session = await getSession({ req });
 
-	const methodChange = () => {
-		setMethod((prev) => (prev === "Login" ? "Register" : "Login"));
-		const animations = document.querySelectorAll(".animation");
-		for (let a of animations) {
-			setTimeout(() => a.classList.toggle("waterUp"), 450);
-			setTimeout(() => a.classList.toggle("water"), 450);
-		}
+	console.log(query);
+
+	return {
+		props: { session },
 	};
+};
+
+const pages = ({ session }) => {
+	const { method, methodChange } = useMethodChange();
 
 	return (
 		<div className="flex items-center justify-center xl:h-screen">

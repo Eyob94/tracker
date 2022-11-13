@@ -1,7 +1,7 @@
-import React from "react";
+import React, { experimental_use as use } from "react";
 import Form from "../Template";
 import Registration from "../Functions/Register";
-
+import { getSession } from "next-auth/react";
 type FormProps = {
 	methodChange: () => void;
 };

@@ -2,7 +2,7 @@ import React from "react";
 
 const Spinner = () => {
 	return (
-		<div className="relative w-10 h-10 animate-spin">
+		<div className="relative w-10 h-10 animate-spin" title="spinner">
 			{Array.from({ length: 10 }).map((arr, i) => {
 				return (
 					<div

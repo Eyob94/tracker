@@ -2,7 +2,10 @@ import React from "react";
 
 const Tick = () => {
 	return (
-		<div className="flex items-center justify-center border rounded-full w-14 h-14 tick border-primary">
+		<div
+			data-testid="tick"
+			className="flex items-center justify-center border rounded-full w-14 h-14 tick border-primary"
+		>
 			<svg
 				width="32"
 				height="22"

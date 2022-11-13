@@ -1,34 +1,103 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth from "next-auth";
-import CredentialsProvider from 'next-auth/providers/credentials'
-import prisma from '../../../lib/prismadb'
+import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "../../../lib/prismadb";
 
-export const authOptions = {
-    adapter:PrismaAdapter(prisma),
-    providers:[
+const bcrypt = require("bcrypt");
 
-        CredentialsProvider({
-            name:"Credentials",
-
-            credentials:{
-                email:{label:"Email", type:"email"},
-                password:{label:"Password", type:"password"}
-            },
-            async authorize(credentials) {
-                // Add logic here to look up the user from the credentials supplied
-                const user = { id: "1", /* name: "J Smith", email: "jsmith@example.com" */ } 
-          
-                if (credentials?.email==="eyob@gmail.com" ) {
-                  // Any object returned will be saved in `user` property of the JWT
-                  return {id:"1"}
-                } else {
-                  // If you return null then an error will be displayed advising the user to check their details.
-                  return null
-          
-                }
-            }
-        })
-    ]
+interface userType {
+	id: string;
+	email: string;
+	blocked: Boolean;
+	image: string | null;
+	name: string | null;
 }
 
-export default NextAuth(authOptions)
+let userAccount: {};
+
+const findUser = async (
+	email: string | undefined,
+	password: string | undefined
+) => {
+	const userData = await prisma.user.findUnique({
+		where: {
+			email,
+		},
+	});
+
+	if (userData) {
+		const verified = await bcrypt.compare(password, userData.password);
+
+		const { password: p, ...user } = userData;
+
+		if (verified) {
+			return { success: true, user, error: null };
+		}
+
+		return { success: false, user: null, error: "password not correct" };
+	} else return { success: false, user: null, error: "user not found" };
+};
+
+export const authOptions = {
+	adapter: PrismaAdapter(prisma),
+	providers: [
+		CredentialsProvider({
+			name: "Credentials",
+
+			credentials: {
+				email: { label: "Email", type: "email" },
+				password: { label: "Password", type: "password" },
+			},
+
+			async authorize(credentials) {
+				const { success, user, error } = await findUser(
+					credentials?.email,
+					credentials?.password
+				);
+
+				if (success) {
+					return user;
+				} else {
+					return null;
+				}
+			},
+		}),
+	],
+	cookie: {
+		secure: process.env.NODE_ENV === "production",
+	},
+	session: {
+		strategy: "jwt",
+		maxAge: 60 * 60 * 24 * 365,
+	},
+	secret: process.env.NEXTAUTH_SECRET,
+	callbacks: {
+		async signIn({ user }: { user: {} }) {
+			try {
+				if (!!user) {
+					return user;
+				} else {
+					console.log("error");
+					return false;
+				}
+			} catch (err) {
+				console.log(err);
+				return false;
+			}
+		},
+		async session({ token, session }: { token: {}; session: {} }) {
+			if (token) {
+				session = token;
+			}
+			return session;
+		},
+		async jwt({ token, user }: { token: {}; user: userType }) {
+			if (user) {
+				token = user;
+			}
+			return token;
+		},
+	},
+};
+
+export default NextAuth(authOptions);

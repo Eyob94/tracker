@@ -1,12 +1,11 @@
 const axios = require("axios");
 
-interface registerTypes {
+export interface registerTypes {
 	email: string;
 	password: string;
 	confirm: string;
 }
-
-interface error {
+export interface error {
 	error: string;
 }
 
