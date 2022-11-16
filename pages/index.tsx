@@ -16,7 +16,7 @@ export const getServerSideProps = async ({ query }: { query: queryType }) => {
 	};
 };
 
-const pages = ({ query }: { query: queryType }) => {
+const Pages = ({ query }: { query: queryType }) => {
 	const { method, methodChange } = useMethodChange();
 
 	useEffect(() => {
@@ -144,4 +144,4 @@ const pages = ({ query }: { query: queryType }) => {
 	);
 };
 
-export default pages;
+export default Pages;
