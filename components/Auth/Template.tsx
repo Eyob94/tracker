@@ -90,7 +90,7 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 						...data,
 						redirect: false,
 					})
-						.then(async ({ ok, error }) => {
+						.then(async ({ ok, error }: any) => {
 							if (ok) {
 								await setLoading(false);
 								await setTick(true);
@@ -150,7 +150,7 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 											}
 										},
 									})}
-									id={field.name}
+									id={`${field.name}${method}`}
 									placeholder={field.name}
 									autoComplete="new-password"
 									className="w-full bg-transparent outline-none placeholder:opacity-0 focus:border-primary text-violet-800 peer placeholder:text-primary/30"
@@ -165,7 +165,7 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 								/>
 
 								<label
-									htmlFor={field.name}
+									htmlFor={`${field.name}${method}`}
 									className={`absolute transition-all duration-300 text-light peer-focus:text-xs peer-focus:-top-2/3 -z-10 peer-focus:text-violet-500 ${
 										watch(field.name as "email" | "password" | "confirm")
 											? "-top-2/3 text-xs text-violet-500"

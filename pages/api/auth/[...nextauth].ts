@@ -85,15 +85,15 @@ export const authOptions = {
 				return false;
 			}
 		},
-		async session({ token, session }: { token: {}; session: {} }) {
+		async session({ token, session }: { token: any; session: any }) {
 			if (token) {
-				session = token;
+				session.user = token.user;
 			}
 			return session;
 		},
-		async jwt({ token, user }: { token: {}; user: userType }) {
+		async jwt({ token, user }: { token: any; user: userType }) {
 			if (user) {
-				token = user;
+				token.user = user;
 			}
 			return token;
 		},

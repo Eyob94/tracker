@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 
-const useMethodChange = () => {
-	const [method, setMethod] = useState<string>("Login");
+type methodType = "Login" | "Register";
 
-	const methodChange = () => {
-		setMethod((prev) => (prev === "Login" ? "Register" : "Login"));
+const useMethodChange = () => {
+	const [method, setMethod] = useState<methodType>("Login");
+
+	const methodChange = (authMethod: methodType, animation: Boolean = true) => {
 		const animations = document.querySelectorAll(".animation");
 		for (let a of animations) {
-			setTimeout(() => a.classList.toggle("waterUp"), 450);
-			setTimeout(() => a.classList.toggle("water"), 450);
+			setTimeout(() => a.classList.toggle("waterUp"), 400);
+			setTimeout(() => a.classList.toggle("water"), 400);
 		}
+		setMethod(authMethod);
 	};
 	return { method, methodChange };
 };

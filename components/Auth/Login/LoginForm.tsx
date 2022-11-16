@@ -2,7 +2,7 @@ import React from "react";
 import Form from "../Template";
 
 type FormProps = {
-	methodChange: () => void;
+	methodChange: (authMethod: "Register") => void;
 };
 
 const LoginForm = ({ methodChange }: FormProps) => {
@@ -32,7 +32,7 @@ const LoginForm = ({ methodChange }: FormProps) => {
 					<div className="flex items-center gap-1 text-xs text-purple-300">
 						<span>Don't have an account?</span>
 						<span
-							onClick={methodChange}
+							onClick={() => methodChange("Register")}
 							className="text-purple-500 cursor-pointer hover:text-primary hover:underline hover:underline-offset-2"
 						>
 							Register

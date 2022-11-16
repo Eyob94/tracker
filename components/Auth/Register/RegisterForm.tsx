@@ -3,7 +3,7 @@ import Form from "../Template";
 import Registration from "../Functions/Register";
 import { getSession } from "next-auth/react";
 type FormProps = {
-	methodChange: () => void;
+	methodChange: (method: "Login") => void;
 };
 
 const RegisterForm = ({ methodChange }: FormProps) => {
@@ -31,7 +31,7 @@ const RegisterForm = ({ methodChange }: FormProps) => {
 					<div className="flex items-center gap-1 text-xs text-purple-300">
 						<span>Already have an account?</span>
 						<span
-							onClick={methodChange}
+							onClick={() => methodChange("Login")}
 							className="text-purple-500 cursor-pointer hover:text-primary hover:underline hover:underline-offset-2"
 						>
 							Login
