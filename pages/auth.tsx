@@ -6,17 +6,20 @@ import RegisterForm from "../components/Auth/Register/RegisterForm";
 import useMethodChange from "../components/Auth/utils/Hooks/useMethodChange";
 import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
+import { NextPageWithLayout } from "./_app";
+import { Session } from "next-auth";
+import type { ReactElement } from "react";
 
-type queryType = {
+export type queryType = {
 	method: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
 	req,
-	res,
+
 	query,
 }) => {
-	const session = await getSession({ req });
+	const session: Session | null = await getSession({ req });
 
 	if (session) {
 		return {
@@ -32,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 	};
 };
 
-const Auth = ({ query, session }: { query: queryType; session: string }) => {
+const Auth: NextPageWithLayout = ({ query, session }) => {
 	const { method, methodChange } = useMethodChange();
 	console.log(session);
 
@@ -163,6 +166,6 @@ const Auth = ({ query, session }: { query: queryType; session: string }) => {
 	);
 };
 
-Auth.Layout = false;
+Auth.getLayout = (page: ReactElement) => <>{page}</>;
 
 export default Auth;

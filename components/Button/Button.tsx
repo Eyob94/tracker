@@ -49,6 +49,7 @@ const Button = ({
 			{ripple && (
 				<div
 					className="absolute bg-red-500 rounded-full ripple"
+					//@ts-ignore
 					style={{ "--l": `${left - 50}px`, "--t": `${top - 50}px` }}
 				></div>
 			)}

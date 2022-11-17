@@ -7,11 +7,13 @@ import Link from "next/link";
 
 const options = [
 	{
+		id: 1,
 		Tab: "Dashboard",
 		icon: <BiHomeAlt />,
 		url: "/dashboard",
 	},
 	{
+		id: 2,
 		Tab: "Schedule",
 		icon: <BsCalendarWeek />,
 		url: "/schedule",
@@ -27,7 +29,7 @@ const Sidebar = () => {
 		<>
 			<div className="flex flex-col w-full gap-2">
 				{options.map((option) => (
-					<Link href={option.url}>
+					<Link href={option.url} key={option.id}>
 						<div
 							className={`flex ${
 								currentUrl === option.url

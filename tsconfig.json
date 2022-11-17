@@ -22,8 +22,9 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "components/Auth/Functions/Register.ts"  ],
+    "**/*.tsx",
+    "types/**/*.ts"
+, "components/Auth/Functions/Register.ts", "components/Button/Button.jsx", "components/Spinner/Spinner.jsx"  ],
   "exclude": [
     "node_modules"
   ]

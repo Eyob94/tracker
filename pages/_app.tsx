@@ -3,23 +3,27 @@ import { Session } from "next-auth";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import Layout from "../components/Layout/Layout";
+import type { ReactElement, ReactNode } from "react";
+import type { NextPage } from "next";
+import { queryType } from "./auth";
 
-function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
-	const PageLayout = Component.Layout ?? true;
+export type NextPageWithLayout<
+	P = { query: queryType; session?: Session },
+	IP = P
+> = NextPage<P, IP> & {
+	getLayout?: (page: ReactElement) => ReactNode;
+};
 
-	console.log(PageLayout);
+type AppPropsWithLayout = AppProps<{ session: Session; query: queryType }> & {
+	Component: NextPageWithLayout;
+};
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+	const pageLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>);
 
 	return (
 		<SessionProvider session={pageProps?.session}>
-			{PageLayout ? (
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
-			) : (
-				<>
-					<Component {...pageProps} />
-				</>
-			)}
+			{pageLayout(<Component {...pageProps} />)};
 		</SessionProvider>
 	);
 }

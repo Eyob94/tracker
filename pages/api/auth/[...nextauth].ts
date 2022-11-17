@@ -1,7 +1,9 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import NextAuth from "next-auth";
+import NextAuth, { DefaultUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../../../lib/prismadb";
+import type { User, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 const bcrypt = require("bcrypt");
 
@@ -67,15 +69,15 @@ export const authOptions = {
 		secure: process.env.NODE_ENV === "production",
 	},
 	session: {
-		strategy: "jwt",
+		strategy: "jwt" as const,
 		maxAge: 60 * 60 * 24 * 365,
 	},
 	secret: process.env.NEXTAUTH_SECRET,
 	callbacks: {
-		async signIn({ user }: { user: {} }) {
+		async signIn({ user }: { user?: User | undefined }) {
 			try {
 				if (!!user) {
-					return user;
+					return true;
 				} else {
 					console.log("error");
 					return false;
@@ -85,13 +87,13 @@ export const authOptions = {
 				return false;
 			}
 		},
-		async session({ token, session }: { token: any; session: any }) {
+		async session({ token, session }: { token: JWT; session: Session }) {
 			if (token) {
-				session.user = token.user;
+				session.user = token;
 			}
 			return session;
 		},
-		async jwt({ token, user }: { token: any; user: userType }) {
+		async jwt({ user, token }: { user?: User | undefined; token: JWT }) {
 			if (user) {
 				token.user = user;
 			}
