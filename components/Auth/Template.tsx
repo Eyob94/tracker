@@ -55,6 +55,7 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 		watch,
 		formState: { errors },
 		setError,
+		clearErrors,
 	} = useForm<formData>();
 	const [showPassword, setShowPassword] = useState<Boolean>(false);
 	const [loading, setLoading] = useState<Boolean>(false);
@@ -65,13 +66,20 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 		<form
 			data-testid="authForm"
 			onSubmit={handleSubmit(async (data) => {
-				/* setLoading(true); */
+				setLoading(true);
 
 				if (method === "Register") {
 					const res = await Registration(data)
-						.then(() => {
-							setLoading(false);
-							setTick(true);
+						.then(async () => {
+							await signIn("credentials", {
+								email: data.email,
+								password: data.password,
+								redirect: false,
+							}).then(() => {
+								setLoading(false);
+								setTick(true);
+								router.push("/dashboard");
+							});
 						})
 						.catch((err) => {
 							if (err === "P2002") {
@@ -85,6 +93,8 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 						.finally(() => {
 							setLoading(false);
 						});
+
+					console.log(res);
 				} else {
 					const res = await signIn("credentials", {
 						...data,
@@ -95,13 +105,14 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 								await setLoading(false);
 								await setTick(true);
 								setTimeout(() => {
-									router.push("/");
+									router.push("/dashboard");
 								}, 500);
 							} else {
 								setError("email", { message: "Please check your credentials" });
 								setError("password", {
 									message: "Please check your credentials",
 								});
+
 								console.log(error);
 								setLoading(false);
 							}

@@ -18,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		return res.status(400).json({ error: "Missing credentials" });
 	}
 
-	const hash = await new Promise((resolve, reject) => {
+	const hash: string = await new Promise((resolve, reject) => {
 		bcrypt.genSalt(1, (err: string, salt: number) => {
 			bcrypt.hash(password, salt, (err: string, hash: string) => {
 				resolve(hash);
@@ -36,6 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 		return res.status(200).json({ user });
 	} catch (err) {
+		console.log(err);
 		return res.status(400).json({ error: err });
 	}
 };
