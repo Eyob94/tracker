@@ -9,7 +9,8 @@ const Spinner = () => {
 					<div
 						key={uuidv4()}
 						className="w-2 h-2 rounded-full spinners"
-						style={{ i: Math.cbrt(i - 1) }}
+						//@ts-ignore
+						style={{ "--i": Math.cbrt(i - 1) }}
 					></div>
 				);
 			})}
