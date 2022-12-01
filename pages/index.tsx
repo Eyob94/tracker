@@ -1,25 +1,17 @@
 import { getSession } from "next-auth/react";
 import React from "react";
 import { GetServerSideProps } from "next";
+import { protectRoute } from "../utils/Functions/ProtectRoute";
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-	const session = await getSession({ req });
-
-	if (!session) {
+	return await protectRoute(req, async () => {
 		return {
 			redirect: {
-				destination: "/auth",
+				destination: "/dashboard",
 				permanent: false,
 			},
 		};
-	}
-
-	return {
-		redirect: {
-			destination: "/dashboard",
-			permanent: false,
-		},
-	};
+	});
 };
 
 const index = () => {
@@ -30,7 +22,7 @@ const index = () => {
 
 	fn();
 
-	return <div>index</div>;
+	return <div>indessx</div>;
 };
 
 export default index;

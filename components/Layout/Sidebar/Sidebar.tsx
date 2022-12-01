@@ -4,6 +4,8 @@ import { BiHomeAlt } from "react-icons/bi";
 import { AiOutlinePoweroff } from "react-icons/ai";
 import { BsCalendarWeek, BsCurrencyDollar } from "react-icons/bs";
 import { HiOutlineCurrencyDollar } from "react-icons/hi";
+import { MdOutlinePeopleAlt } from "react-icons/md";
+import { FaTasks } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
@@ -27,6 +29,18 @@ const options = [
 		icon: <BsCurrencyDollar />,
 		url: "/transactions",
 	},
+	{
+		id: 4,
+		Tab: "Employees",
+		icon: <MdOutlinePeopleAlt />,
+		url: "/employee",
+	},
+	{
+		id: 5,
+		Tab: "tasks",
+		icon: <FaTasks />,
+		url: "/tasks",
+	},
 ];
 
 const Sidebar = () => {
@@ -36,26 +50,28 @@ const Sidebar = () => {
 
 	return (
 		<div className="relative w-full h-full">
-			<div className="relative flex flex-col w-full h-full gap-2 text-sm md:text-base">
+			<div className="relative flex flex-col w-full h-full gap-4 text-sm md:text-base">
 				{options.map((option) => (
 					<Link href={option.url} key={option.id}>
 						<div
 							className={`flex ${
 								currentUrl === option.url
-									? "text-primary mdLborder-r-4 md:border-primary md:bg-light/25 font-bold"
+									? "text-primary md:border-r-2 2xl:border-r-4 md:border-primary md:bg-light/30 font-bold"
 									: "text-neutral-400 hover:text-light"
-							}  w-full  items-center justify-center p-2 group cursor-pointer `}
+							}  w-full group items-center justify-center p-2 group cursor-pointer `}
 						>
-							<div className="flex items-center justify-between w-48 gap-3 md:gap-6">
-								<span>{option?.Tab}</span>
-								<span>
+							<div className="flex items-center w-40 gap-0 md:w-16 2xl:w-48 2xl:justify-between md:justify-center justify-evenly md:gap-6">
+								<span className="flex justify-start w-24 group md:hidden 2xl:flex ">
+									{option?.Tab}
+								</span>
+								<span className="transition-all duration-300 group-active:rotate-[30deg]">
 									<IconContext.Provider
 										value={{
 											className: ` ${
 												currentUrl === option.url
 													? "text-primary"
 													: "text-neutral-400 group-hover:text-light"
-											} `,
+											} md:scale-110 `,
 											size: "1.25em",
 										}}
 									>
@@ -68,13 +84,17 @@ const Sidebar = () => {
 				))}
 			</div>
 			<div
-				className={`flex  w-full  items-center justify-center p-2 group cursor-pointer absolute bottom-[10%] hover:bg-red-100/50`}
+				className={`flex  w-full text-sm md:text-base  items-center justify-center p-2 group cursor-pointer absolute md:bottom-[10%] bottom-1/4 hover:bg-red-100/50`}
 				onClick={() => signOut()}
 			>
-				<div className="flex items-center justify-between w-48 gap-6 text-red-400 hover:text-red-500">
-					<span>Sign Out</span>
+				<div className="flex items-center w-40 text-red-400 justify-evenly 2xl:justify-between md:justify-center hover:text-red-500">
+					<span className="flex justify-start w-24 md:hidden 2xl:flex ">
+						Sign Out
+					</span>
 					<span>
-						<IconContext.Provider value={{}}>
+						<IconContext.Provider
+							value={{ size: "1.25em", className: "md:scale-110" }}
+						>
 							<AiOutlinePoweroff />
 						</IconContext.Provider>
 					</span>

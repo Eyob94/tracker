@@ -18,6 +18,7 @@ html {
 	padding: 0;
 	overflow-y: hidden;
 	overflow-x: auto;
+	box-sizing: border-box;
 }
 
 body {
