@@ -24,7 +24,7 @@
     "**/*.ts",
     "**/*.tsx",
     "types/**/*.ts"
-, "components/Auth/Functions/Register.ts", "components/Button/Button.jsx", "components/Spinner/Spinner.tsx"  ],
+, "components/Auth/Functions/Register.ts", "components/Button/Button.jsx", "components/Spinner/Spinner.tsx", "pages/api/user/register.mts"  ],
   "exclude": [
     "node_modules"
   ]
