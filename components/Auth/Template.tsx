@@ -2,7 +2,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../Button/Button";
-
+//@ts-ignore
+import axios from "axios";
 import { IconContext } from "react-icons";
 import { IoIosEye } from "react-icons/io";
 import Spinner from "../Spinner/Spinner";
@@ -68,8 +69,14 @@ const Form = ({ confirm = false, forgot = false, method, demo }: Form) => {
 			onSubmit={handleSubmit(async (data) => {
 				setLoading(true);
 
+				console.log(data);
+
 				if (method === "Register") {
-					const res = await Registration(data)
+					const res = await axios({
+						method: "POST",
+						url: "/api/user/register",
+						data,
+					})
 						.then(async () => {
 							await signIn("credentials", {
 								email: data.email,

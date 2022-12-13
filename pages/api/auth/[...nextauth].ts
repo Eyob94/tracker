@@ -4,18 +4,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../../../lib/prismadb";
 import type { User, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
+//@ts-ignore
+import axios from "axios";
 
 const bcrypt = require("bcrypt");
-
-interface userType {
-	id: string;
-	email: string;
-	blocked: Boolean;
-	image: string | null;
-	name: string | null;
-}
-
-let userAccount: {};
 
 const findUser = async (
 	email: string | undefined,
@@ -52,10 +44,16 @@ export const authOptions = {
 			},
 
 			async authorize(credentials) {
-				const { success, user, error } = await findUser(
-					credentials?.email,
-					credentials?.password
-				);
+				const {
+					data: { success, user, error },
+				} = await axios({
+					method: "GET",
+					url: `${process.env.BACKEND_URL}/login`,
+					data: {
+						email: credentials?.email,
+						password: credentials?.password,
+					},
+				});
 
 				if (success) {
 					return user;

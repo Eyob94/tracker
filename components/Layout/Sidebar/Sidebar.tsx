@@ -43,25 +43,30 @@ const options = [
 	},
 ];
 
-const Sidebar = () => {
+type SideBarProps = {
+	handleClickEvent: <Promise>(url: string) => void;
+};
+
+const Sidebar = ({ handleClickEvent }: SideBarProps) => {
 	const router = useRouter();
 
 	const currentUrl = router.pathname;
 
 	return (
 		<div className="relative w-full h-full">
-			<div className="relative flex flex-col w-full h-full gap-4 text-sm md:text-base">
+			<div className="relative flex flex-col w-full h-full gap-4 md:text-base">
 				{options.map((option) => (
 					<Link href={option.url} key={option.id}>
 						<div
+							onClick={() => handleClickEvent(option.url)}
 							className={`flex ${
 								currentUrl === option.url
-									? "text-primary md:border-r-2 2xl:border-r-4 md:border-primary md:bg-light/30 font-bold"
+									? "text-primary md:border-r-2 2xl:border-r-4 md:border-primary rounded-r-full md:rounded-none bg-light/30 font-bold"
 									: "text-neutral-400 hover:text-light"
 							}  w-full group items-center justify-center p-2 group cursor-pointer `}
 						>
-							<div className="flex items-center w-40 gap-0 md:w-16 2xl:w-48 2xl:justify-between md:justify-center justify-evenly md:gap-6">
-								<span className="flex justify-start w-24 group md:hidden 2xl:flex ">
+							<div className="flex items-center w-44 md:w-16 2xl:w-48 2xl:justify-between md:justify-center justify-evenly md:gap-6">
+								<span className="flex justify-start w-24 group md:hidden md:w-0 2xl:flex 2xl:w-24">
 									{option?.Tab}
 								</span>
 								<span className="transition-all duration-300 group-active:rotate-[30deg]">

@@ -1,42 +1,40 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../lib/prismadb";
-
-const bcrypt = require("bcrypt");
+//@ts-ignore
+import axios from "axios";
+import { getSession, useSession } from "next-auth/react";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { method } = req;
 
+	const session = await getSession({ req });
+
 	if (method !== "POST") {
 		return res.status(405).end();
 	}
+	if (!!session) {
+		return res.status(403).end();
+	}
 
-	const {
-		credentials: { email, password, remember },
-	} = req?.body;
+	const { email, password, confirm } = req?.body;
 
 	if (!(email && password)) {
 		return res.status(400).json({ error: "Missing credentials" });
 	}
 
-	const hash: string = await new Promise((resolve, reject) => {
-		bcrypt.genSalt(1, (err: string, salt: number) => {
-			bcrypt.hash(password, salt, (err: string, hash: string) => {
-				resolve(hash);
-				reject(err);
-			});
-		});
-	});
-
 	try {
-		const user = await prisma.user.create({
+		const {
+			data: { user },
+		} = await axios({
+			method: "POST",
+			url: `${process.env.BACKEND_URL}/register`,
 			data: {
 				email,
-				password: hash,
+				password,
+				confirm,
 			},
 		});
 		return res.status(200).json({ user });
 	} catch (err) {
-		console.log(err);
 		return res.status(400).json({ error: err });
 	}
 };

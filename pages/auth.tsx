@@ -37,9 +37,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 
 const Auth: NextPageWithLayout = ({ query, session }) => {
 	const { method, methodChange } = useMethodChange();
-	console.log(session);
-
-	console.log("use", useSession().data);
 
 	useEffect(() => {
 		if (query.method && query.method === "register") {
